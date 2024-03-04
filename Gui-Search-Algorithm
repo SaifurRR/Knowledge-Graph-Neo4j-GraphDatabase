@@ -1,0 +1,65 @@
+!pip install rdflib
+
+from rdflib import Graph, URIRef
+
+# create a knowledge graph
+cybersecurity_graph = Graph()
+
+# define namespaces
+ex = URIRef("http://example.org/")
+
+import tkinter as tk
+from tkinter import ttk
+
+# sample data for demonstration
+data = [
+    {"name": "John Doe", "age": 30, "gender": "Male", "city": "New York"},
+    {"name": "Jane Smith", "age": 25, "gender": "Female", "city": "San Francisco"},
+    {"name": "Alice Brown", "age": 35, "gender": "Female", "city": "Los Angeles"},
+    {"name": "Bob Johnson", "age": 40, "gender": "Male", "city": "Chicago"},
+    {"name": "Charlie Davis", "age": 45, "gender": "Male", "city": "Miami"}
+]
+
+def search():
+    # get the search query
+    query = search_entry.get().lower()
+
+    # perform search based on the query
+    results = [d for d in data if any(query in str(value).lower() for value in d.values())]
+
+    # display the results in the treeview
+    display_results(results)
+
+def display_results(results):
+    # clear previous results
+    for row in results_tree.get_children():
+        results_tree.delete(row)
+
+    # insert new results
+    for result in results:
+        values = [result[key] for key in ["name", "age", "gender", "city"]]
+        results_tree.insert("", "end", values=values)
+
+# create the main window
+root = tk.Tk()
+root.title("Advanced Search")
+
+# search entry and button
+search_label = tk.Label(root, text="Search:")
+search_label.pack(pady=10)
+search_entry = tk.Entry(root, width=30)
+search_entry.pack(pady=5)
+search_button = tk.Button(root, text="Search", command=search)
+search_button.pack(pady=5)
+
+# results table (treeview)
+columns = ("Name", "Age", "Gender", "City")
+results_tree = ttk.Treeview(root, columns=columns, show="headings")
+for col in columns:
+    results_tree.heading(col, text=col)
+results_tree.pack(padx=10, pady=10)
+
+# display all data initially
+display_results(data)
+
+root.mainloop()
